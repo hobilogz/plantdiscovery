@@ -525,8 +525,20 @@ async def handle_photo(message: types.Message, state: FSMContext):
 
     file = await bot.get_file(file_id)
     file_path = f"{file_id}.jpg"
-    await bot.download_file(file.file_path, file_path)
-    
+    # Скачивание файла с повторными попытками
+    for attempt in range(3):
+        try:
+            await bot.download_file(file.file_path, file_path)
+            break
+        except Exception as e:
+            print(f"Ошибка скачивания (попытка {attempt+1}/3): {e}")
+            if attempt == 2:
+                await processing_msg.delete()
+                await message.answer("❌ Ошибка сети при скачивании фото. Попробуйте еще раз.")
+                return
+            import asyncio
+            await asyncio.sleep(2)
+            
     try:
         result = await asyncio.to_thread(identify_plant, file_path)
         
@@ -600,9 +612,9 @@ async def main():
     class CustomAiohttpSession(AiohttpSession):
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
-            self._connector_init.update({"force_close": True})
+            self._connector_init.update({"keepalive_timeout": 30})
             
-    session = CustomAiohttpSession()
+    session = CustomAiohttpSession(timeout=60)
     bot = Bot(token=TELEGRAM_TOKEN, session=session)
     await dp.start_polling(bot)
 
