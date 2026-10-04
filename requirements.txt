@@ -4,6 +4,5 @@ numpy
 Pillow>=10.0.0
 requests>=2.31.0
 Wikipedia-API>=0.6.0
-torchvision
 psycopg2-binary>=2.9.9
 aiohttp>=3.9.0

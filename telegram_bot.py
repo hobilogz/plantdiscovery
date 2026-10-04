@@ -16,9 +16,31 @@ class PlantariumState(StatesGroup):
 import sys
 import onnxruntime as ort
 import numpy as np
-import torchvision.transforms as transforms
-
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+def transform_image(img):
+    w, h = img.size
+    if w < h:
+        new_w = 256
+        new_h = int(256 * h / w)
+    else:
+        new_h = 256
+        new_w = int(256 * w / h)
+    img = img.resize((new_w, new_h), Image.Resampling.BILINEAR)
+    
+    w, h = img.size
+    left = (w - 224) / 2
+    top = (h - 224) / 2
+    right = left + 224
+    bottom = top + 224
+    img = img.crop((left, top, right, bottom))
+    
+    img_np = np.array(img).astype(np.float32) / 255.0
+    img_np = np.transpose(img_np, (2, 0, 1))
+    
+    mean = np.array([0.485, 0.456, 0.406]).reshape(3, 1, 1)
+    std = np.array([0.229, 0.224, 0.225]).reshape(3, 1, 1)
+    img_np = (img_np - mean) / std
+    
+    return img_np
 
 class PlantClassifier:
     def __init__(self, model_path="models/plantclef/plantclef24_dinov2_fp16.onnx", labels_path="models/plantclef/classes.json"):
@@ -31,18 +53,11 @@ class PlantClassifier:
         self.session = ort.InferenceSession(model_path, sess_options=opts)
         with open(labels_path, 'r', encoding='utf-8') as f:
             self.classes = json.load(f)
-            
-        self.transform = transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ])
         
     def predict(self, image_path, top_k=5):
         try:
             img = Image.open(image_path).convert('RGB')
-            img_t = self.transform(img).unsqueeze(0).numpy().astype(np.float16)
+            img_t = np.expand_dims(transform_image(img), axis=0).astype(np.float16)
             
             input_name = self.session.get_inputs()[0].name
             output_name = self.session.get_outputs()[0].name
