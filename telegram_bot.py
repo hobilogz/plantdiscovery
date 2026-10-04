@@ -100,7 +100,7 @@ def get_keyboard(game_mode: bool):
     else:
         return types.ReplyKeyboardRemove()
 
-classifier = PlantClassifier()
+classifier = None
 wiki = wikipediaapi.Wikipedia('PlantBot/1.0 (plant@example.com)', 'ru')
 
 def generate_plant_text(sci_name: str) -> str:
@@ -570,6 +570,11 @@ async def main():
     await start_web_server()
     print("Web server started, initializing DB...")
     init_db()
+    
+    print("Loading neural network...")
+    global classifier
+    classifier = PlantClassifier()
+    
     print("Бот запущен!")
     await dp.start_polling(bot)
 
