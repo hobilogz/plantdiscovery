@@ -567,9 +567,10 @@ async def start_web_server():
     print(f"Web server running on port {port}")
 
 async def main():
+    await start_web_server()
+    print("Web server started, initializing DB...")
     init_db()
     print("Бот запущен!")
-    await start_web_server()
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
