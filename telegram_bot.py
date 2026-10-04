@@ -83,12 +83,10 @@ class PlantClassifier:
             return []
 
 from app.database.db import get_connection, init_db
-from aiogram.client.session.aiohttp import AiohttpSession
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8740390083:AAEzIo90a7WyLZE0yAktpBmyP8NiIXQv8Xs")
 
-session = AiohttpSession(proxy="socks5://127.0.0.1:40000")
-bot = Bot(token=TELEGRAM_TOKEN, session=session)
+bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
 
 def has_camera_metadata(image_path: str) -> bool:
