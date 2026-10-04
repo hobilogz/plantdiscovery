@@ -559,7 +559,7 @@ async def handle_photo(message: types.Message, state: FSMContext):
             if not is_document:
                 text += f"⚠️ **Античит:** Фото сжато! Чтобы растение зачлось, отправляйте его **как Файл/Документ**.\n\n"
             else:
-                valid_exif = has_camera_metadata(temp_path)
+                valid_exif = has_camera_metadata(file_path)
                 if not valid_exif:
                     text += f"❌ **Античит:** На фото нет данных камеры (EXIF). Похоже, оно скачано из интернета. Не добавлено!\n\n"
                 else:
