@@ -596,9 +596,13 @@ async def main():
     
     print("Бот запущен!")
     global bot
-    session = AiohttpSession(
-        connector=aiohttp.TCPConnector(force_close=True)
-    )
+    
+    class CustomAiohttpSession(AiohttpSession):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self._connector_init.update({"force_close": True})
+            
+    session = CustomAiohttpSession()
     bot = Bot(token=TELEGRAM_TOKEN, session=session)
     await dp.start_polling(bot)
 
