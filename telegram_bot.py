@@ -19,18 +19,18 @@ import numpy as np
 def transform_image(img):
     w, h = img.size
     if w < h:
-        new_w = 256
-        new_h = int(256 * h / w)
+        new_w = 518
+        new_h = int(518 * h / w)
     else:
-        new_h = 256
-        new_w = int(256 * w / h)
+        new_h = 518
+        new_w = int(518 * w / h)
     img = img.resize((new_w, new_h), Image.Resampling.BILINEAR)
     
     w, h = img.size
-    left = (w - 224) / 2
-    top = (h - 224) / 2
-    right = left + 224
-    bottom = top + 224
+    left = (w - 518) / 2
+    top = (h - 518) / 2
+    right = left + 518
+    bottom = top + 518
     img = img.crop((left, top, right, bottom))
     
     img_np = np.array(img).astype(np.float32) / 255.0
