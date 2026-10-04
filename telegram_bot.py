@@ -89,10 +89,7 @@ import aiohttp
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8740390083:AAEzIo90a7WyLZE0yAktpBmyP8NiIXQv8Xs")
 
-session = AiohttpSession(
-    connector=aiohttp.TCPConnector(force_close=True)
-)
-bot = Bot(token=TELEGRAM_TOKEN, session=session)
+bot = Bot(token=TELEGRAM_TOKEN)
 dp = Dispatcher()
 
 def has_camera_metadata(image_path: str) -> bool:
@@ -598,6 +595,11 @@ async def main():
     classifier = PlantClassifier()
     
     print("Бот запущен!")
+    global bot
+    session = AiohttpSession(
+        connector=aiohttp.TCPConnector(force_close=True)
+    )
+    bot = Bot(token=TELEGRAM_TOKEN, session=session)
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
