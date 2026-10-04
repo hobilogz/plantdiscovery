@@ -1,0 +1,50 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pylint.main]
+py-version = "3.11"
+ignore = [".venv"]
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-instance-attributes",
+    "too-many-locals",
+    "too-many-positional-arguments",
+    "no-member",
+    "duplicate-code",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+
+[tool.coverage.run]
+branch = true
+source = ["app", "core", "datasets", "models", "ui"]
+
+[tool.coverage.report]
+fail_under = 60
+show_missing = true
+skip_empty = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "performance: lightweight performance checks for local scaffold behavior",
+]
