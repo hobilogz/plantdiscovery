@@ -6,3 +6,4 @@ requests>=2.31.0
 Wikipedia-API>=0.6.0
 psycopg2-binary>=2.9.9
 aiohttp>=3.9.0
+aiohttp-socks
