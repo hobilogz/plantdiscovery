@@ -536,7 +536,6 @@ async def handle_photo(message: types.Message, state: FSMContext):
                 await processing_msg.delete()
                 await message.answer("❌ Ошибка сети при скачивании фото. Попробуйте еще раз.")
                 return
-            import asyncio
             await asyncio.sleep(2)
             
     try:
